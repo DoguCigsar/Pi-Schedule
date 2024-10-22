@@ -1,11 +1,7 @@
 <script lang="ts">
-	
 </script>
 
-<div class="counter">
-	
-</div>
+<div class="counter"></div>
 
 <style>
-	
 </style>
