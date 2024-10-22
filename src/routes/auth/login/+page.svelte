@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient';
+	import { goto } from '$app/navigation';
 	let email: string;
 	let password: string;
 	let login_failed: boolean = false;
@@ -18,6 +19,7 @@
 				// Handle successful sign-in
 				console.log('Signed in successfully:', data);
 				login_failed = false;
+				goto('/');
 			}
 		} catch (err) {
 			// Handle any unexpected weird errors
