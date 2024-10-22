@@ -1,30 +1,27 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient';
-	export let data;
+	let data: any;
 
-	let period_1 = {
-		// Example data structure
-		room: 208,
-		class: 'Science',
-		teacher: 'Ms. Aman'
-	};
-	let period_2 = {
-		room: 330,
-		class: 'ESL-E',
-		teacher: 'Ms. Sidrak'
-	};
-	let period_3 = {
-		room: 302,
-		class: 'Visual Arts',
-		teacher: 'Ms. Marino'
-	};
-	let period_4 = {
-		room: 302,
-		class: 'Digital Technology and Innovations',
-		teacher: 'Ms. Manson'
-	};
+	// Function to load the timetable data initially
+	async function load() {
+		const { data: timetableData, error } = await supabase.from('time_tables').select();
+		if (error) {
+			console.error('Error fetching timetables:', error.message);
+			return;
+		}
+		data = timetableData;
+	}
 
-	let is_day2: boolean = false; // A bool indicator for whether the day is a day 2 or not
+	// Initial load when the component is mounted
+	load();
+
+	// Example period data structure
+	let period_1 = { room: 208, class: 'Science', teacher: 'Ms. Aman' };
+	let period_2 = { room: 330, class: 'ESL-E', teacher: 'Ms. Sidrak' };
+	let period_3 = { room: 302, class: 'Visual Arts', teacher: 'Ms. Marino' };
+	let period_4 = { room: 302, class: 'Digital Technology and Innovations', teacher: 'Ms. Manson' };
+
+	let is_day2: boolean = false; // Day 2 indicator
 
 	// Add a new timetable to the database and refresh the data
 	let add = async () => {
@@ -43,7 +40,7 @@
 		if (fetchError) {
 			console.error('Error fetching updated data:', fetchError.message);
 		} else {
-			data.time_table.data = updatedData; // Update the UI with the latest data
+			data = updatedData; // Update the data variable directly
 		}
 	};
 
@@ -67,8 +64,8 @@
 
 <!-- Render the time tables -->
 <ul>
-	{#if data && data.time_table && data.time_table.data}
-		{#each data.time_table.data as time_table}
+	{#if data && data.length > 0}
+		{#each data as time_table}
 			{#if !is_day2}
 				<li>
 					<strong>Period 1</strong>: Room {time_table.period_1.room}, {time_table.period_1.class},
