@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient';
-	import { fail } from '@sveltejs/kit';
-
 	let email: string;
 	let password: string;
 	let login_failed: boolean = false;
