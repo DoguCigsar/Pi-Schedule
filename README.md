@@ -1,1 +1,1 @@
-# School Tracker
+# 𝝅 Schedule
