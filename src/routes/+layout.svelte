@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Timed Table</title>
+	<title>𝝅 Schedule</title>
 </svelte:head>
 
 <slot />

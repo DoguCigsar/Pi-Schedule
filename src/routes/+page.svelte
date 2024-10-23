@@ -1,6 +1,14 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
+	import { isDay2 } from '$lib/isDay2';
+	import { onMount } from 'svelte';
+	import { checkAndRedirect } from '$lib/checkhAuth';
 	let data: any;
+
+	onMount(() => {
+		checkAndRedirect();
+	});
 
 	// Function to load the timetable data initially
 	async function load() {
@@ -12,101 +20,115 @@
 		data = timetableData;
 	}
 
-	// Initial load when the component is mounted
+	let is_day2: boolean = isDay2(); // Day 2 indicator
+
 	load();
-
-	// Example period data structure
-	let period_1 = { room: 208, class: 'Science', teacher: 'Ms. Aman' };
-	let period_2 = { room: 330, class: 'ESL-E', teacher: 'Ms. Sidrak' };
-	let period_3 = { room: 302, class: 'Visual Arts', teacher: 'Ms. Marino' };
-	let period_4 = { room: 302, class: 'Digital Technology and Innovations', teacher: 'Ms. Manson' };
-
-	let is_day2: boolean = false; // Day 2 indicator
-
-	// Add a new timetable to the database and refresh the data
-	let add = async () => {
-		const { error } = await supabase
-			.from('time_tables')
-			.insert({ period_1, period_2, period_3, period_4 });
-
-		if (error) {
-			console.error('Error inserting timetable:', error.message);
-			return;
-		}
-
-		// Refresh the data after insertion
-		const { data: updatedData, error: fetchError } = await supabase.from('time_tables').select();
-
-		if (fetchError) {
-			console.error('Error fetching updated data:', fetchError.message);
-		} else {
-			data = updatedData; // Update the data variable directly
-		}
-	};
-
-	let update = async () => {
-		const user = (await supabase.auth.getUser()).data.user;
-		if (!user) {
-			console.error('No user is logged in');
-			return;
-		}
-
-		const { error } = await supabase
-			.from('time_tables')
-			.update({ period_1, period_2, period_3, period_4 })
-			.eq('owner', user.id);
-
-		if (error) {
-			console.error('Error updating timetable:', error.message);
-		}
-	};
 </script>
 
-<!-- Render the time tables -->
-<ul>
-	{#if data && data.length > 0}
-		{#each data as time_table}
-			{#if !is_day2}
-				<li>
-					<strong>Period 1</strong>: Room {time_table.period_1.room}, {time_table.period_1.class},
-					Teacher: {time_table.period_1.teacher}
-				</li>
-				<li>
-					<strong>Period 2</strong>: Room {time_table.period_2.room}, {time_table.period_2.class},
-					Teacher: {time_table.period_2.teacher}
-				</li>
-				<li>
-					<strong>Period 3</strong>: Room {time_table.period_3.room}, {time_table.period_3.class},
-					Teacher: {time_table.period_3.teacher}
-				</li>
-				<li>
-					<strong>Period 4</strong>: Room {time_table.period_4.room}, {time_table.period_4.class},
-					Teacher: {time_table.period_4.teacher}
-				</li>
-				<hr />
-			{:else}
-				<li>
-					<strong>Period 1</strong>: Room {time_table.period_2.room}, {time_table.period_2.class},
-					Teacher: {time_table.period_2.teacher}
-				</li>
-				<li>
-					<strong>Period 2</strong>: Room {time_table.period_1.room}, {time_table.period_1.class},
-					Teacher: {time_table.period_1.teacher}
-				</li>
-				<li>
-					<strong>Period 3</strong>: Room {time_table.period_4.room}, {time_table.period_4.class},
-					Teacher: {time_table.period_4.teacher}
-				</li>
-				<li>
-					<strong>Period 4</strong>: Room {time_table.period_3.room}, {time_table.period_3.class},
-					Teacher: {time_table.period_3.teacher}
-				</li>
-				<hr />
-			{/if}
-		{/each}
-	{:else}
-		<li>No time tables found</li>
-	{/if}
+<div class="container">
+	<h1 class="header">Timetable</h1>
+	<ul class="timetable-list">
+		{#if data && data.length > 0}
+			{#each data as time_table}
+				{#if !is_day2}
+					<li class="timetable-item">
+						<strong>Period 1</strong>: Room: {time_table.period_1.room}, {time_table.period_1
+							.class}, Teacher: {time_table.period_1.teacher}
+					</li>
+					<li class="timetable-item">
+						<strong>Period 2</strong>: Room: {time_table.period_2.room}, {time_table.period_2
+							.class}, Teacher: {time_table.period_2.teacher}
+					</li>
+					<li class="timetable-item">
+						<strong>Period 3</strong>: Room: {time_table.period_3.room}, {time_table.period_3
+							.class}, Teacher: {time_table.period_3.teacher}
+					</li>
+					<li class="timetable-item">
+						<strong>Period 4</strong>: Room: {time_table.period_4.room}, {time_table.period_4
+							.class}, Teacher: {time_table.period_4.teacher}
+					</li>
+					<hr />
+				{:else}
+					<li class="timetable-item"><strong>Today is a day 2</strong></li>
+					<li class="timetable-item">
+						<strong>Period 1</strong>: Room: {time_table.period_2.room}, {time_table.period_2
+							.class}, Teacher: {time_table.period_2.teacher}
+					</li>
+					<li class="timetable-item">
+						<strong>Period 2</strong>: Room: {time_table.period_1.room}, {time_table.period_1
+							.class}, Teacher: {time_table.period_1.teacher}
+					</li>
+					<li class="timetable-item">
+						<strong>Period 3</strong>: Room: {time_table.period_4.room}, {time_table.period_4
+							.class}, Teacher: {time_table.period_4.teacher}
+					</li>
+					<li class="timetable-item">
+						<strong>Period 4</strong>: Room: {time_table.period_3.room}, {time_table.period_3
+							.class}, Teacher: {time_table.period_3.teacher}
+					</li>
+					<hr />
+				{/if}
+			{/each}
+		{:else}
+			<li class="timetable-item">No time tables found</li>
+		{/if}
+	</ul>
+	<button class="mdc-button mdc-button--raised" on:click={() => goto('/courses_setup')}>
+		<span class="mdc-button__label">Edit</span>
+	</button>
+</div>
 
-	<button on:click={add}>Add</button>
-</ul>
+<style>
+	:global(body) {
+		font-family: 'Roboto', sans-serif;
+		background-color: #f5f5f5;
+		margin: 0;
+		padding: 0;
+	}
+
+	.container {
+		padding: 24px;
+		max-width: 800px;
+		margin: 40px auto;
+		background-color: #ffffff;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.header {
+		font-size: 24px;
+		font-weight: 500;
+		color: #3f51b5;
+		margin-bottom: 24px;
+		text-align: center;
+	}
+
+	.timetable-list {
+		list-style-type: none;
+		padding: 0;
+	}
+
+	.timetable-item {
+		padding: 12px;
+		font-size: 16px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.mdc-button {
+		width: 100%;
+		background-color: #3f51b5;
+		color: #ffffff;
+		padding: 12px 0;
+		font-size: 16px;
+		border-radius: 4px;
+		margin-top: 16px;
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			padding: 16px;
+			margin: 20px auto;
+		}
+	}
+</style>
