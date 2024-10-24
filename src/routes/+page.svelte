@@ -5,9 +5,12 @@
 	import { onMount } from 'svelte';
 	import { checkAndRedirect } from '$lib/checkhAuth';
 	let data: any;
+	let userName: string = '';
 
 	onMount(() => {
 		checkAndRedirect();
+		load();
+		getUserEmail();
 	});
 
 	// Function to load the timetable data initially
@@ -20,13 +23,20 @@
 		data = timetableData;
 	}
 
-	let is_day2: boolean = isDay2(); // Day 2 indicator
+	// Function to get the user email
+	async function getUserEmail() {
+		const { data: user } = await supabase.auth.getUser();
+		userName = user?.user?.user_metadata.name || '';
+	}
 
-	load();
+	let is_day2: boolean = isDay2(); // Day 2 indicator
 </script>
 
 <div class="container">
 	<h1 class="header">Timetable</h1>
+	<h2 class="header">
+		Hi, {userName}!
+	</h2>
 	<ul class="timetable-list">
 		{#if data && data.length > 0}
 			{#each data as time_table}

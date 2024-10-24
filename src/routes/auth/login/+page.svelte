@@ -26,6 +26,10 @@
 			console.error('Unexpected error:', err);
 		}
 	};
+
+	let goToSignup = () => {
+		goto('/auth/signup');
+	};
 </script>
 
 <div class="container">
@@ -64,6 +68,10 @@
 
 	<button class="mdc-button mdc-button--raised" on:click={() => login(email, password)}>
 		<span class="mdc-button__label">Login</span>
+	</button>
+
+	<button class="mdc-button mdc-button--outlined" on:click={goToSignup}>
+		<span class="mdc-button__label">Sign Up</span>
 	</button>
 </div>
 
@@ -122,12 +130,20 @@
 
 	.mdc-button {
 		width: 100%;
-		background-color: #3f51b5;
-		color: #ffffff;
 		padding: 12px 0;
 		font-size: 16px;
 		border-radius: 4px;
 		margin-top: 16px;
+	}
+
+	.mdc-button--raised {
+		background-color: #3f51b5;
+		color: #ffffff;
+	}
+
+	.mdc-button--outlined {
+		border: 1px solid #3f51b5;
+		color: #3f51b5;
 	}
 
 	@media (max-width: 768px) {
