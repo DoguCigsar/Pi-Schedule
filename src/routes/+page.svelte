@@ -86,6 +86,9 @@
 	<button class="mdc-button mdc-button--raised" on:click={() => goto('/courses_setup')}>
 		<span class="mdc-button__label">Edit</span>
 	</button>
+	<button class="mdc-button mdc-button--raised" on:click={() => goto('/homeworks')}>
+		<span class="mdc-button__label">Homeworks</span>
+	</button>
 </div>
 
 <style>
