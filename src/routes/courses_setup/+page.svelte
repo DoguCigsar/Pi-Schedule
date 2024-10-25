@@ -17,6 +17,7 @@
 	onMount(() => {
 		checkAndRedirect();
 		initMDC();
+		fetchTimetables();
 	});
 
 	async function fetchTimetables() {
@@ -39,11 +40,6 @@
 		const buttons = document.querySelectorAll('.mdc-button');
 		buttons.forEach((button) => new MDCRipple(button));
 	}
-
-	onMount(() => {
-		checkAndRedirect();
-		fetchTimetables();
-	});
 </script>
 
 <div class="container">

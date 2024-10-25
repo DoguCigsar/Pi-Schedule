@@ -5,6 +5,7 @@
 	let user_name: string;
 	let password: string;
 	let signup = async (email: string, password: string, user_name: string) => {
+		if(!email || !password || !user_name) return;
 		try {
 			const { data, error } = await supabase.auth.signUp({
 				email: email,

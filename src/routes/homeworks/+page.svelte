@@ -32,6 +32,7 @@
 	});
 
 	let insertHomework = async (data: string, classId: number) => {
+		if (!data) return;
 		await _insertHomework(data, classId);
 		homeworks = await _fetchHomeworks();
 		homeworkData = '';
