@@ -6,16 +6,24 @@
 	import { checkAndRedirect } from '$lib/checkhAuth';
 	import { _fetchDueHomeworks, _fetchTimetable } from './+page';
 	import { getTimeLeft } from '$lib/getTimeLeft';
+	import { acceptSharedHomework, rejectSharedHomework } from '$lib/sharedHomeworkHandler';
+	import { _getSharedHomework } from './share_homework/+page';
 	let data: any;
 	let userName: string = '';
 	let dueHomeworks: any[] = [];
 	let timetable: any[] = [];
+	let sharedHomework: any[] = [];
+	let showNotification: boolean = false;
+	let showPopup: boolean = false;
+	let selectedPeriod: number | undefined = undefined;
+	let selectedHomework: any = null;
 
 	onMount(() => {
 		checkAndRedirect();
 		load();
 		getUserEmail();
 		loadDueHomeworks();
+		loadSharedHomework();
 	});
 
 	// Function to load the timetable data initially
@@ -47,16 +55,86 @@
 		});
 	}
 
+	// Function to load shared homework
+	async function loadSharedHomework() {
+		sharedHomework = await _getSharedHomework();
+		if (sharedHomework && sharedHomework.length > 0) {
+			showNotification = true;
+		}
+	}
+
+	// Function to show popup with homework details
+	function showAcceptPopup(homework: any) {
+		selectedHomework = homework;
+		showPopup = true;
+	}
+
+	// Function to accept shared homework
+	async function acceptHomework() {
+		if (selectedHomework && selectedPeriod !== undefined) {
+			await acceptSharedHomework(selectedHomework.id, selectedPeriod);
+			showPopup = false;
+			sharedHomework = sharedHomework.filter((hw) => hw.id !== selectedHomework.id);
+			if (sharedHomework.length === 0) {
+				showNotification = false;
+			}
+			loadDueHomeworks(); // Refresh due homeworks
+		}
+	}
+
+	// Function to reject shared homework
+	function rejectHomework(homeworkId: number) {
+		rejectSharedHomework(homeworkId);
+		sharedHomework = sharedHomework.filter((hw) => hw.id !== homeworkId);
+		if (sharedHomework.length === 0) {
+			showNotification = false;
+		}
+	}
+
 	let is_day2: boolean = isDay2(); // Day 2 indicator
 </script>
 
 <div class="container">
-	<h1 class="header">Timetable</h1>
+	{#if showNotification}
+		<div class="notification-container">
+			{#each sharedHomework as homework}
+				<div class="notification-bubble">
+					<p>You have new shared homework!</p>
+					<button on:click={() => showAcceptPopup(homework)}>Accept</button>
+					<button on:click={() => rejectHomework(homework.id)}>Reject</button>
+				</div>
+			{/each}
+		</div>
+	{/if}
+	{#if showPopup}
+		<div class="popup-overlay">
+			<div class="popup">
+				<h2>Homework Details</h2>
+				<p><strong>Message:</strong> {selectedHomework.message}</p>
+				<p><strong>Details:</strong> {selectedHomework.data}</p>
+				<p><strong>Due Date:</strong> {new Date(selectedHomework.due_date).toLocaleDateString()}</p>
+				<label for="period">Select Period:</label>
+				<select id="period" bind:value={selectedPeriod}>
+					<option value={undefined}>Select a period</option>
+					{#each [0, 1, 2, 3] as period}
+						<option value={period}
+							>{timetable[0]?.[`period_${period + 1}`]?.class || `Period ${period}`}</option
+						>
+					{/each}
+				</select>
+				<div class="popup-buttons">
+					<button on:click={acceptHomework}>Accept</button>
+					<button on:click={() => (showPopup = false)}>Cancel</button>
+				</div>
+			</div>
+		</div>
+	{/if}
 	<h2 class="header">
 		Hi, {userName}!
 	</h2>
 	<div class="content">
 		<div class="timetable-section">
+			<h1 class="header">Timetable</h1>
 			<ul class="timetable-list">
 				{#if data && data.length > 0}
 					{#each data as time_table}
@@ -116,7 +194,7 @@
 							<strong>{homework.course}</strong>: {homework.data}
 							<h5>
 								Due on: {new Date(homework.due_date).toLocaleDateString()}
-								({getTimeLeft(new Date(homework.due_date)) + 1} Days)
+								({getTimeLeft(new Date(homework.due_date))} Days)
 							</h5>
 						</li>
 					{/each}
@@ -196,6 +274,97 @@
 		font-size: 16px;
 		border-radius: 4px;
 		margin-top: 16px;
+	}
+
+	.notification-container {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px; /* Space between notification bubbles */
+		z-index: 1000;
+	}
+
+	.notification-bubble {
+		background-color: #ffeb3b;
+		padding: 16px;
+		border-radius: 8px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.notification-bubble p {
+		margin: 0 0 8px 0;
+		font-size: 16px;
+	}
+
+	.notification-bubble button {
+		margin-right: 8px;
+		padding: 8px 16px;
+		font-size: 14px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	.notification-bubble button:first-of-type {
+		background-color: #4caf50;
+		color: white;
+	}
+
+	.notification-bubble button:last-of-type {
+		background-color: #f44336;
+		color: white;
+	}
+
+	.popup-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 1001;
+	}
+
+	.popup {
+		background-color: #ffffff;
+		padding: 24px;
+		border-radius: 8px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		width: 90%;
+		max-width: 500px;
+	}
+
+	.popup h2 {
+		margin-top: 0;
+	}
+
+	.popup-buttons {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 16px;
+	}
+
+	.popup-buttons button {
+		padding: 8px 16px;
+		font-size: 14px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	.popup-buttons button:first-of-type {
+		background-color: #4caf50;
+		color: white;
+	}
+
+	.popup-buttons button:last-of-type {
+		background-color: #f44336;
+		color: white;
 	}
 
 	@media (min-width: 769px) {

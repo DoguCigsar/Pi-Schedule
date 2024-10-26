@@ -5,6 +5,8 @@
 	import { MDCTextField } from '@material/textfield';
 	import { DateInput } from 'date-picker-svelte';
 	import { getTimeLeft } from '$lib/getTimeLeft';
+	import { checkAndRedirect } from '$lib/checkhAuth';
+	import { goto } from '$app/navigation';
 
 	type Homework = {
 		class: number | null;
@@ -28,6 +30,7 @@
 	let due_date: Date = new Date();
 
 	onMount(async () => {
+		checkAndRedirect();
 		homeworks = await _fetchHomeworks();
 		timetable = await _fetchTimetable();
 		console.log(timetable);
@@ -74,7 +77,7 @@
 							<h5>
 								Due on: {new Date(homework.due_date).toLocaleDateString()} ({getTimeLeft(
 									new Date(homework.due_date)
-								) + 1} Days)
+								)} Days)
 							</h5>
 						{:else}
 							<span>Class not found</span>: {homework.data}
@@ -82,6 +85,10 @@
 					{:else}
 						<span>Timetable not found</span>: {homework.data}
 					{/if}
+					<button
+						class="mdc-button mdc-button--raised mdc-button--small"
+						on:click={() => goto('/share_homework?id=' + homework.id)}>Share Homework</button
+					>
 					<button
 						class="mdc-button mdc-button--raised mdc-button--small"
 						on:click={() => deleteHomework(homework.id)}>Delete</button
@@ -179,8 +186,8 @@
 
 	.homework-item {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
+		flex-direction: column;
+		gap: 8px;
 		padding: 12px;
 		border-bottom: 1px solid #e0e0e0;
 	}
@@ -212,6 +219,7 @@
 		padding: 8px 16px;
 		font-size: 14px;
 		border-radius: 4px;
+		margin: 4px 0;
 	}
 
 	.mdc-button--small {
@@ -219,10 +227,27 @@
 		font-size: 14px;
 	}
 
+	@media (min-width: 769px) {
+		.homework-item {
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.mdc-button {
+			margin: 0 8px;
+		}
+	}
+
 	@media (max-width: 768px) {
 		.container {
 			padding: 16px;
 			margin: 20px auto;
+		}
+
+		.mdc-button {
+			width: 100%;
+			margin: 4px 0;
 		}
 	}
 
