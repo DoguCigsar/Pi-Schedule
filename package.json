@@ -34,6 +34,7 @@
 		"@material/button": "^14.0.0",
 		"@material/dom": "^14.0.0",
 		"@material/textfield": "^14.0.0",
-		"@supabase/supabase-js": "^2.45.5"
+		"@supabase/supabase-js": "^2.45.5",
+		"date-picker-svelte": "^2.14.0"
 	}
 }

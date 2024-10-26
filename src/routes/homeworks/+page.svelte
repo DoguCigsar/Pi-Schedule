@@ -3,6 +3,8 @@
 	import { _fetchHomeworks, _insertHomework, _fetchTimetable, _deleteHomework } from './+page';
 	import { MDCRipple } from '@material/ripple';
 	import { MDCTextField } from '@material/textfield';
+	import { DateInput } from 'date-picker-svelte';
+	import { getTimeLeft } from '$lib/getTimeLeft';
 
 	type Homework = {
 		class: number | null;
@@ -23,6 +25,7 @@
 
 	let homeworkData: string = '';
 	let selectedClass: number = 0;
+	let due_date: Date = new Date();
 
 	onMount(async () => {
 		homeworks = await _fetchHomeworks();
@@ -31,9 +34,9 @@
 		initMDC();
 	});
 
-	let insertHomework = async (data: string, classId: number) => {
+	let insertHomework = async (data: string, classId: number, dueDate) => {
 		if (!data) return;
-		await _insertHomework(data, classId);
+		await _insertHomework(data, classId, dueDate);
 		homeworks = await _fetchHomeworks();
 		homeworkData = '';
 	};
@@ -47,7 +50,13 @@
 
 	function initMDC() {
 		const textFields = document.querySelectorAll('.mdc-text-field');
-		textFields.forEach((textField) => new MDCTextField(textField));
+		textFields.forEach((textField) => {
+			try {
+				new MDCTextField(textField);
+			} catch (error) {
+				console.error('Error initializing MDCTextField:', error);
+			}
+		});
 		const buttons = document.querySelectorAll('.mdc-button');
 		buttons.forEach((button) => new MDCRipple(button));
 	}
@@ -62,6 +71,11 @@
 					{#if timetable[0]}
 						{#if timetable[0]['period_' + (homework.class + 1).toString()]}
 							{timetable[0]['period_' + (homework.class + 1).toString()]['class']}: {homework.data}
+							<h5>
+								Due on: {new Date(homework.due_date).toLocaleDateString()} ({getTimeLeft(
+									new Date(homework.due_date)
+								) + 1} Days)
+							</h5>
 						{:else}
 							<span>Class not found</span>: {homework.data}
 						{/if}
@@ -81,7 +95,7 @@
 
 	<form
 		class="homework-form"
-		on:submit|preventDefault={() => insertHomework(homeworkData, selectedClass)}
+		on:submit|preventDefault={() => insertHomework(homeworkData, selectedClass, due_date)}
 	>
 		<label class="mdc-text-field mdc-text-field--outlined">
 			<span class="mdc-floating-label">Homework</span>
@@ -117,6 +131,16 @@
 				<span class="mdc-notched-outline__trailing"></span>
 			</span>
 		</label>
+		<!-- svelte-ignore a11y-label-has-associated-control -->
+		<label class="mdc-text-field mdc-text-field--outlined">
+			<span class="mdc-floating-label">Due Date</span>
+			<DateInput bind:value={due_date} min={new Date()} class="mdc-text-field__input" />
+			<span class="mdc-notched-outline">
+				<span class="mdc-notched-outline__leading"></span>
+				<span class="mdc-notched-outline__notch"></span>
+				<span class="mdc-notched-outline__trailing"></span>
+			</span>
+		</label>
 		<button type="submit" class="mdc-button mdc-button--raised mdc-button--small">Add</button>
 	</form>
 </div>
@@ -136,7 +160,7 @@
 		background-color: #ffffff;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		border-radius: 8px;
-		overflow: hidden;
+		overflow: visible; /* Allow overflow */
 	}
 
 	.header {
@@ -200,5 +224,10 @@
 			padding: 16px;
 			margin: 20px auto;
 		}
+	}
+
+	/* Additional styles to ensure the date picker is not cut off */
+	.mdc-text-field--outlined {
+		overflow: visible; /* Ensure the overflow is visible */
 	}
 </style>

@@ -5,10 +5,10 @@ export let _fetchHomeworks = async () => {
 	return homeworks;
 };
 
-export let _insertHomework = async (homework: string, classId: number) => {
+export let _insertHomework = async (homework: string, classId: number, due_date: Date) => {
 	const { data, error } = await supabase
 		.from('homeworks')
-		.insert({ data: homework, class: classId });
+		.insert({ due_date: due_date, data: homework, class: classId });
 	if (error) {
 		console.error('Error inserting homework:', error.message);
 		return;

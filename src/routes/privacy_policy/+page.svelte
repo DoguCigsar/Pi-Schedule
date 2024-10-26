@@ -9,11 +9,11 @@
 		Your data is only used inside this application and is never shared with any 1st and 3rd parties.
 	</li>
 	<li>
-		We will never use your data for any other porpuse than what is clearly shown in the website.
+		We will never use your data for any other purpose than what is clearly shown in the website.
 		Such as showing your timetable, and homeworks.
 	</li>
 	<li>We will never use your data for advertising and we will never show any ads in this site.</li>
-	<li>We will never use telemetry measurement tools for any porpuse.</li>
+	<li>We will never use telemetry measurement tools for any purpose.</li>
 </ul>
 
 <style>
