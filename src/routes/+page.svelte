@@ -39,7 +39,7 @@
 	// Function to get the user email
 	async function getUserEmail() {
 		const { data: user } = await supabase.auth.getUser();
-		userName = user?.user?.user_metadata.name || '';
+		userName = user?.user?.user_metadata.name || user?.user?.user_metadata.user_name || '';
 	}
 
 	// Function to load due homeworks
@@ -129,9 +129,11 @@
 			</div>
 		</div>
 	{/if}
+
 	<h2 class="header">
 		Hi, {userName}!
 	</h2>
+
 	<div class="content">
 		<div class="timetable-section">
 			<h1 class="header">Timetable</h1>
