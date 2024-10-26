@@ -99,7 +99,7 @@
 		<div class="notification-container">
 			{#each sharedHomework as homework}
 				<div class="notification-bubble">
-					<p>You have new shared homework!</p>
+					<p>You have a new shared homework!</p>
 					<button on:click={() => showAcceptPopup(homework)}>Accept</button>
 					<button on:click={() => rejectHomework(homework.id)}>Reject</button>
 				</div>
