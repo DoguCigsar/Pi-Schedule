@@ -116,7 +116,7 @@
 							<strong>{homework.course}</strong>: {homework.data}
 							<h5>
 								Due on: {new Date(homework.due_date).toLocaleDateString()}
-								({getTimeLeft(new Date(homework.due_date))} Days)
+								({getTimeLeft(new Date(homework.due_date))})
 							</h5>
 						</li>
 					{/each}

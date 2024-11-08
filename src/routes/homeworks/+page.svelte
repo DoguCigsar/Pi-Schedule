@@ -77,7 +77,7 @@
 							<h5>
 								Due on: {new Date(homework.due_date).toLocaleDateString()} ({getTimeLeft(
 									new Date(homework.due_date)
-								)} Days)
+								)})
 							</h5>
 						{:else}
 							<span>Class not found</span>: {homework.data}
