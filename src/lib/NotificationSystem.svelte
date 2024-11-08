@@ -39,6 +39,7 @@
 				showNotification = false;
 			}
 			// Refresh due homeworks if needed
+			location.reload(); // Refresh the page
 		}
 	}
 
@@ -50,6 +51,18 @@
 			showNotification = false;
 		}
 	}
+
+	// Get timetable data
+	supabase
+		.from('time_tables')
+		.select()
+		.then(({ data, error }) => {
+			if (error) {
+				console.error('Error fetching timetables:', error.message);
+				return;
+			}
+			timetable = data;
+		});
 </script>
 
 {#if showNotification}
