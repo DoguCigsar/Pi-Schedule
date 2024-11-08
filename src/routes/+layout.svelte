@@ -16,7 +16,7 @@
 <slot />
 
 <NotificationSystem />
-<h4>Logged in as {userName}</h4>
+<!-- <h4>Logged in as {userName}</h4> Temporary disable -->
 <h4><a href="/auth/profile">Profile</a> <a href="/auth/logout">Logout</a></h4>
 <h4>© 2024 Dogu Cigsar/COS-Soft</h4>
 <h5><a href="/privacy_policy">Privacy Policy</a></h5>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
 	let newPassword: string;
 	let newUsername: string;
@@ -8,9 +9,13 @@
 		});
 	};
 	let setUsername = async (name: string) => {
-		const { data, error } = await supabase.auth.updateUser({
-			data: { name: name, user_name: name }
-		});
+		const { data, error } = await supabase.auth
+			.updateUser({
+				data: { name: name, user_name: name }
+			})
+			.then(() => {
+				goto('/');
+			});
 	};
 </script>
 
