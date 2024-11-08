@@ -9,7 +9,7 @@
 	};
 	let setUsername = async (name: string) => {
 		const { data, error } = await supabase.auth.updateUser({
-			data: { user_name: name }
+			data: { name: name, user_name: name }
 		});
 	};
 </script>
