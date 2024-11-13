@@ -1,10 +1,22 @@
 import { supabase } from '$lib/supabaseClient';
 
+/**
+ * Fetches a specific homework by its ID.
+ * @param {number} id - The ID of the homework to fetch.
+ * @returns {Promise<any>} - A promise that resolves to the fetched homework data.
+ */
 export let _fetchSpecificHomework = async (id: number) => {
 	const { data: homework } = await supabase.from('homeworks').select('*').match({ id });
 	return homework;
 };
 
+/**
+ * Shares a specific homework with a receiver.
+ * @param {number} id - The ID of the homework to share.
+ * @param {string} receiver - The email of the receiver.
+ * @param {string} message - A message to include with the shared homework.
+ * @returns {Promise<void>} - A promise that resolves when the homework is shared.
+ */
 export let _shareHomework = async (id: number, receiver: string, message: string) => {
 	const homework = await _fetchSpecificHomework(id);
 	if (!homework || homework.length === 0) {
@@ -21,6 +33,10 @@ export let _shareHomework = async (id: number, receiver: string, message: string
 	});
 };
 
+/**
+ * Retrieves all shared homework for the currently authenticated user.
+ * @returns {Promise<any>} - A promise that resolves to the shared homework data.
+ */
 export let _getSharedHomework = async () => {
 	const { data: sharedHomework } = await supabase
 		.from('shared_homeworks')

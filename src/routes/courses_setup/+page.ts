@@ -1,6 +1,10 @@
 import { goto } from '$app/navigation';
 import { supabase } from '$lib/supabaseClient';
 
+/**
+ * Fetches timetables from the database.
+ * @returns {Promise<any>} The fetched timetable data.
+ */
 export let _fetchTimetables = async () => {
 	const { data: timetableData, error } = await supabase.from('time_tables').select();
 	if (error) {
@@ -10,6 +14,11 @@ export let _fetchTimetables = async () => {
 	return timetableData;
 };
 
+/**
+ * Adds a new timetable to the database.
+ * @param {any} timetable - The timetable data to add.
+ * @returns {Promise<any>} The added timetable data.
+ */
 export let _addTimetable = async (timetable: any) => {
 	const { data, error } = await supabase.from('time_tables').upsert({
 		period_1: timetable[0],
@@ -25,6 +34,12 @@ export let _addTimetable = async (timetable: any) => {
 	}
 	return data;
 };
+
+/**
+ * Updates an existing timetable in the database.
+ * @param {any} timetable - The timetable data to update.
+ * @returns {Promise<any>} The updated timetable data.
+ */
 export let _updateTimetable = async (timetable: any) => {
 	const { data, error } = await supabase
 		.from('time_tables')

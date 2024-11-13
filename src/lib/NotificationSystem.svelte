@@ -12,10 +12,16 @@
 	let timetable: any[] = [];
 
 	onMount(() => {
+		/**
+		 * Function to be executed when the component is mounted.
+		 * It loads shared homework.
+		 */
 		loadSharedHomework();
 	});
 
-	// Function to load shared homework
+	/**
+	 * Loads shared homework from the database and updates the state.
+	 */
 	async function loadSharedHomework() {
 		sharedHomework = await _getSharedHomework();
 		if (sharedHomework && sharedHomework.length > 0) {
@@ -23,13 +29,18 @@
 		}
 	}
 
-	// Function to show popup with homework details
+	/**
+	 * Shows a popup with homework details.
+	 * @param {any} homework - The homework data to show in the popup.
+	 */
 	function showAcceptPopup(homework: any) {
 		selectedHomework = homework;
 		showPopup = true;
 	}
 
-	// Function to accept shared homework
+	/**
+	 * Accepts shared homework and updates the state.
+	 */
 	async function acceptHomework() {
 		if (selectedHomework && selectedPeriod !== undefined) {
 			await acceptSharedHomework(selectedHomework.id, selectedPeriod);
@@ -43,7 +54,10 @@
 		}
 	}
 
-	// Function to reject shared homework
+	/**
+	 * Rejects shared homework and updates the state.
+	 * @param {number} homeworkId - The ID of the homework to reject.
+	 */
 	function rejectHomework(homeworkId: number) {
 		rejectSharedHomework(homeworkId);
 		sharedHomework = sharedHomework.filter((hw) => hw.id !== homeworkId);

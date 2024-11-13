@@ -15,15 +15,23 @@
 	];
 
 	onMount(() => {
+		/**
+		 * Function to be executed when the component is mounted.
+		 * It checks authentication, initializes MDC components, and fetches timetables.
+		 */
 		checkAndRedirect();
 		initMDC();
 		fetchTimetables();
 	});
 
+	/**
+	 * Fetches timetables from the database and updates the state.
+	 */
 	async function fetchTimetables() {
 		try {
 			const data = await _fetchTimetables();
 			if (data && data.length === 0) {
+				// No timetables found
 			} else {
 				courses_initiated = true;
 			}
@@ -34,6 +42,9 @@
 		}
 	}
 
+	/**
+	 * Initializes Material Design Components (MDC) for text fields and buttons.
+	 */
 	function initMDC() {
 		const textFields = document.querySelectorAll('.mdc-text-field');
 		textFields.forEach((textField) => new MDCTextField(textField));

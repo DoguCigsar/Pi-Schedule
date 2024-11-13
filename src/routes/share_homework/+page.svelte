@@ -12,6 +12,12 @@
 	let message: string = '';
 	let confirmationMessage: string = '';
 
+	/**
+	 * Shares the homework with the specified receiver.
+	 * @param {number} id - The ID of the homework to share.
+	 * @param {string} receiver - The email of the receiver.
+	 * @param {string} message - A message to include with the shared homework.
+	 */
 	let shareHomework = async (id: number, receiver: string, message: string) => {
 		if (!receiver) {
 			confirmationMessage = 'Receiver is required';
@@ -24,11 +30,19 @@
 		goto('/');
 	};
 
+	/**
+	 * Fetches the specific homework by its ID.
+	 * @param {number} id - The ID of the homework to fetch.
+	 * @returns {Promise<any>} - A promise that resolves to the fetched homework data.
+	 */
 	let fetchSpecificHomework = async (id: number) => {
 		const homework = await _fetchSpecificHomework(id);
 		return homework;
 	};
 
+	/**
+	 * Lifecycle function that runs when the component is mounted.
+	 */
 	onMount(async () => {
 		checkAndRedirect();
 		await fetchSpecificHomework(id).then((data) => {

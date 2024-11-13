@@ -30,6 +30,10 @@
 	let due_date: Date = new Date();
 
 	onMount(async () => {
+		/**
+		 * Function to be executed when the component is mounted.
+		 * It checks authentication, fetches homeworks and timetable, and initializes MDC components.
+		 */
 		checkAndRedirect();
 		homeworks = await _fetchHomeworks();
 		timetable = await _fetchTimetable();
@@ -38,6 +42,12 @@
 	});
 
 	let insertHomework = async (data: string, classId: number, dueDate) => {
+		/**
+		 * Inserts a new homework entry and updates the homework list.
+		 * @param {string} data - The homework data.
+		 * @param {number} classId - The class ID.
+		 * @param {Date} dueDate - The due date of the homework.
+		 */
 		if (!data) return;
 		await _insertHomework(data, classId, dueDate);
 		homeworks = await _fetchHomeworks();
@@ -45,6 +55,10 @@
 	};
 
 	let deleteHomework = async (id: number) => {
+		/**
+		 * Deletes a homework entry and updates the homework list.
+		 * @param {number} id - The ID of the homework to delete.
+		 */
 		await _deleteHomework(id);
 		homeworks = await _fetchHomeworks();
 	};
@@ -52,6 +66,9 @@
 	const periods = ['period_1', 'period_2', 'period_3', 'period_4'];
 
 	function initMDC() {
+		/**
+		 * Initializes Material Design Components (MDC) for text fields and buttons.
+		 */
 		const textFields = document.querySelectorAll('.mdc-text-field');
 		textFields.forEach((textField) => {
 			try {
