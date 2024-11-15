@@ -59,7 +59,7 @@
 		<p>
 			Due on: {new Date(homework[0].due_date).toLocaleDateString()} ({getTimeLeft(
 				new Date(homework[0].due_date)
-			)} Days)
+			)})
 		</p>
 	{/if}
 	<input type="text" bind:value={receiver} placeholder="Receiver" class="input-field" />
