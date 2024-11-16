@@ -4,9 +4,10 @@ export const isDay2 = () => {
 	const now = new Date();
 
 	let list_of_holidays = [
-		new Date(2024, 9, 11).toDateString(), // Pa Day
-		new Date(2024, 9, 14).toDateString(), // Thanksgiving
-		new Date(2024, 10, 1).toDateString() // Random no day switch day
+		new Date(2024, 9, 11).toDateString(), // PA Day (11th of October)
+		new Date(2024, 9, 14).toDateString(), // Thanksgiving (14th of October)
+		new Date(2024, 10, 1).toDateString(), // Random no day-switch day (1st of November)
+		new Date(2024, 10, 22).toDateString() // PA Day (22nd of November)
 	];
 
 	let isDay2 = false;
