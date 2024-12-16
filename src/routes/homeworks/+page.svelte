@@ -8,6 +8,9 @@
 	import { checkAndRedirect } from '$lib/checkhAuth';
 	import { goto } from '$app/navigation';
 
+	const aYearFromNow = new Date();
+	aYearFromNow.setFullYear(aYearFromNow.getFullYear() + 1);
+
 	type Homework = {
 		class: number | null;
 		created_date: string;
@@ -158,7 +161,12 @@
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<label class="mdc-text-field mdc-text-field--outlined">
 			<span class="mdc-floating-label">Due Date</span>
-			<DateInput bind:value={due_date} min={new Date()} class="mdc-text-field__input" />
+			<DateInput
+				bind:value={due_date}
+				min={new Date()}
+				max={aYearFromNow}
+				class="mdc-text-field__input"
+			/>
 			<span class="mdc-notched-outline">
 				<span class="mdc-notched-outline__leading"></span>
 				<span class="mdc-notched-outline__notch"></span>
