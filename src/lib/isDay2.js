@@ -1,6 +1,6 @@
 export const isDay2 = () => {
-	// September 4th 2024 in local time
-	const date_check_start = new Date(2025, 0, 0);
+	// March 25 2025 in local time
+	const date_check_start = new Date(2025, 3, 24);
 	const now = new Date();
 
 	let list_of_holidays = [
